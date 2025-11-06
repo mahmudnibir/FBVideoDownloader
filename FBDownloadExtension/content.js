@@ -257,6 +257,7 @@
 
   function scanAndAttach() {
     const videos = Array.from(document.querySelectorAll('video'));
+    console.log('FBVD: Found', videos.length, 'video elements on page');
     for (const v of videos) addButtonToVideo(v);
   }
 
