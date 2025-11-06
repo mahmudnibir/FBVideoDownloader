@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "FB Video Downloader",
+  "version": "0.1.0",
+  "description": "Adds a download icon to Facebook Reels and videos so you can download them with one click.",
+  "permissions": [
+    "downloads",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.facebook.com/*",
+    "*://facebook.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.facebook.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "download-16.svg",
+    "48": "download-48.svg",
+    "128": "download-128.svg"
+  }
+}
