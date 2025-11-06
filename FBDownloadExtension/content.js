@@ -73,7 +73,7 @@
     // Scan element attributes and ancestors for possible URLs (data-src, data-store, hrefs)
     function scanAncestorsForUrl(node) {
       let cur = node;
-      const urlPattern = /https?:\\/\\/[^\s'"<>]+?(?:\.mp4|\.m3u8)/ig;
+      const urlPattern = /https?:\/\/[^\s'"<>]+?(?:\.mp4|\.m3u8)/ig;
       for (let i=0;i<8 && cur;i++) {
         // check attributes
         for (const attr of Array.from(cur.attributes || [])) {
@@ -97,7 +97,7 @@
     function scanDocumentForUrls() {
       const page = document.documentElement && document.documentElement.innerHTML || '';
       // look for https...mp4 or m3u8
-      const rx = /https?:\\/\\/[^\s'"<>]+?(?:\\.mp4|\\.m3u8)/ig;
+      const rx = /https?:\/\/[^\s'"<>]+?(?:\.mp4|\.m3u8)/ig;
       const matches = page.match(rx);
       if (matches && matches.length) return matches[0];
       return null;
