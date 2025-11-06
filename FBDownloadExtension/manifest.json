@@ -5,7 +5,8 @@
   "description": "Adds a download icon to Facebook Reels and videos so you can download them with one click.",
   "permissions": [
     "downloads",
-    "storage"
+    "storage",
+    "webRequest"
   ],
   "host_permissions": [
     "*://*.facebook.com/*",

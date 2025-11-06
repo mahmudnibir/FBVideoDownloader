@@ -112,8 +112,23 @@
       src = scanAncestorsForUrl(video) || scanDocumentForUrls();
     }
 
+    // If still nothing, ask background for captured URLs from network requests
     if (!src) {
-      console.warn('FBVD: no direct URL found for video element. Looked at video.src/currentSrc, <source>, ancestors, and page.');
+      try {
+        const resp = await chrome.runtime.sendMessage({action: 'getVideoUrls'});
+        if (resp && resp.success && resp.urls && resp.urls.length) {
+          console.log('FBVD: Found cached video URLs from network:', resp.urls);
+          // Use the most recent mp4 URL if available, otherwise first URL
+          src = resp.urls.find(u => u.includes('.mp4')) || resp.urls[0];
+          if (src) console.log('FBVD: Using captured URL:', src);
+        }
+      } catch (e) {
+        console.warn('FBVD: Failed to get cached URLs from background', e);
+      }
+    }
+
+    if (!src) {
+      console.warn('FBVD: no direct URL found for video element. Looked at video.src/currentSrc, <source>, ancestors, page, and network cache.');
       // Show a single informative alert to the user (no duplicates)
       alert('Unable to locate direct video URL. If the video is protected, the extension may not be able to download it. Check the console for details.');
       return;
