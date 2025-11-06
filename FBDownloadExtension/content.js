@@ -118,8 +118,15 @@
         const resp = await chrome.runtime.sendMessage({action: 'getVideoUrls'});
         if (resp && resp.success && resp.urls && resp.urls.length) {
           console.log('FBVD: Found cached video URLs from network:', resp.urls);
-          // Use the most recent mp4 URL if available, otherwise first URL
-          src = resp.urls.find(u => u.includes('.mp4')) || resp.urls[0];
+          // Filter out non-video URLs (HTML pages, etc)
+          const validUrls = resp.urls.filter(u => {
+            return !u.includes('.htm') && 
+                   !u.includes('facebook.com/reel') && 
+                   !u.includes('facebook.com/watch') &&
+                   (/\.(mp4|webm|m3u8|mov)/i.test(u) || /video/i.test(u));
+          });
+          // Use the most recent mp4 URL if available, otherwise first valid URL
+          src = validUrls.find(u => u.includes('.mp4')) || validUrls[0];
           if (src) console.log('FBVD: Using captured URL:', src);
         }
       } catch (e) {

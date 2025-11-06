@@ -8,8 +8,17 @@ const videoUrlCache = new Map();
 chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
     const url = details.url;
-    // Filter for video URLs
-    if (/\.(mp4|m3u8|webm|mov)(\?|$)/i.test(url) || url.includes('video')) {
+    // Filter for video URLs - be more strict
+    if (
+      details.type === 'media' || 
+      /\.(mp4|m3u8|webm|mov|avi|mkv)(\?|$)/i.test(url) ||
+      (/video/i.test(url) && /fbcdn\.net/i.test(url))
+    ) {
+      // Reject HTML pages and non-video content
+      if (url.includes('.htm') || url.includes('www.facebook.com/reel') || url.includes('www.facebook.com/watch')) {
+        return;
+      }
+      
       const tabId = details.tabId;
       if (tabId && tabId > 0) {
         if (!videoUrlCache.has(tabId)) {
@@ -25,7 +34,7 @@ chrome.webRequest.onBeforeRequest.addListener(
       }
     }
   },
-  { urls: ["*://*.facebook.com/*", "*://*.fbcdn.net/*"] },
+  { urls: ["*://*.facebook.com/*", "*://*.fbcdn.net/*"], types: ["media", "xmlhttprequest", "other"] },
   []
 );
 
